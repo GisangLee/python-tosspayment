@@ -1,1 +1,1 @@
-from src.main import TossPayments
+from .main import TossPayments

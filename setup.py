@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name='python-tosspayments',
-    version='0.0.2',
+    version='0.0.4',
     description='Toss Payments SDK for python',
     author='jsonlee',
     author_email='dudegs.py@gmail.com',

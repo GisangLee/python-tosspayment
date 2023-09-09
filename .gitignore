@@ -1,4 +1,4 @@
 /build
 /dist
 ./pyproject.toml
-./src/python_tosspayments.egg-info/
+/src/python_tosspayments.egg-info
