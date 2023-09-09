@@ -16,7 +16,7 @@ class TossPayments(object):
             self.reason = reason
 
     @staticmethod
-    def get_response(response):
+    def __get_response(response):
         result = response.json()
         if response.status_code != requests.codes.ok:
             raise TossPayments.HttpError(response.status_code, result.get("code"), result.get("message", ""))
@@ -109,7 +109,7 @@ class TossPayments(object):
         if response.status_code == 200:
             return response.json()
         else:
-            return self.get_response(response)
+            return self.__get_response(response)
 
     def search_payment(self, payment_key: str):
         response = self.__get(
@@ -120,4 +120,4 @@ class TossPayments(object):
         if response.status_code == 200:
             return response.json()
         else:
-            return self.get_response(response)
+            return self.__get_response(response)
