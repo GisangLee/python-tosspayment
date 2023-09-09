@@ -53,38 +53,37 @@ class TossPayments(object):
 
         return response
 
-    def __post(self, url: str, idempotency_key: str, data: dict):
+    def __post(self, url: str, data: dict, idempotency_key: str = None):
         headers = self.__get_headers(self)
-        new_headers = {
-            **headers,
-            "Idempotency-Key": idempotency_key,
-        }
+
+        if idempotency_key:
+            headers["Idempotency-Key"] = idempotency_key
 
         response = self.__create_session().post(
             url,
-            headers=new_headers,
+            headers=headers,
             json=data,
         )
 
         return response
 
-    def confirm(self, payment_key: str, toss_order_id: str, idempotency_key: str, amount: int):
+    def confirm(self, payment_key: str, toss_order_id: str, amount: int, idempotency_key: str = None):
         response = self.__post(
             "".join([self.__base_url, self.__api_url, "confirm"]),
-            idempotency_key,
             data={
                 "paymentKey": payment_key,
                 "orderId": toss_order_id,
                 "amount": amount,
             },
+            idempotency_key=idempotency_key,
         )
 
         if response.status_code == 200:
             return response.json()
         else:
-            return self.get_response(response)
+            return self.__get_response(response)
 
-    def cancel(self, payment_key: str, idempotency_key: str, cancel_data: dict):
+    def cancel(self, payment_key: str, cancel_data: dict, idempotency_key: str = None):
         # refund_receive_account는 가상계좌 결제 건에서만 활용
         refund_receive_account = cancel_data.get("refund_receive_account", {})
 
@@ -102,8 +101,8 @@ class TossPayments(object):
 
         response = self.__post(
             "".join([self.__base_url, self.__api_url, f"{payment_key}/", "cancel"]),
-            idempotency_key,
             data=data,
+            idempotency_key=idempotency_key,
         )
 
         if response.status_code == 200:
