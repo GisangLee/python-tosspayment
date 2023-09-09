@@ -25,7 +25,7 @@ toss_client = Tosspayments("Your Toss Payment Secret Key")
 Please visit the official [Toss Payments](https://docs.tosspayments.com/reference) website to find the most up-to-date information.
 ### Common Guidelines for POST APIs
 * idempotency_key  
-  * An `idempotency_key` can be used for the POST API.
+  * An `idempotency_key` can be used for the POST API (at headers).
     * If you want `idempotence`, add idempotency_key. (`not required`)
     * max_length = 300
   * The remaining APIs automatically guarantee idempotence.
@@ -40,7 +40,7 @@ toss_client.confirm(payment_key: str, toss_order_id: str, amount: int, idempoten
   {
       "amount":"1000",
       "orderId":"ORDER_ID_THAT_YOU_CREATE",  -> need to create when creating your payment data
-      "paymentKey":"PAYMENT_KEY_FROM_FRONT_END"  -> We receive it from the front-end.
+      "paymentKey":"PAYMENT_KEY_FROM_FRONT_END",  -> We receive it from the front-end.
   }
   ```
 
