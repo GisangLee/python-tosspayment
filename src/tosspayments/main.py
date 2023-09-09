@@ -67,12 +67,12 @@ class TossPayments(object):
 
         return response
 
-    def confirm(self, payment_key: str, toss_order_id: str, amount: int, idempotency_key: str = None):
+    def confirm(self, payment_key: str, order_id: str, amount: int, idempotency_key: str = None):
         response = self.__post(
             "".join([self.__base_url, self.__api_url, "confirm"]),
             data={
                 "paymentKey": payment_key,
-                "orderId": toss_order_id,
+                "orderId": order_id,
                 "amount": amount,
             },
             idempotency_key=idempotency_key,
@@ -84,7 +84,7 @@ class TossPayments(object):
             return self.__get_response(response)
 
     def cancel(self, payment_key: str, cancel_data: dict, idempotency_key: str = None):
-        # refund_receive_account는 가상계좌 결제 건에서만 활용
+        # virtual_account refund info
         refund_receive_account = cancel_data.get("refund_receive_account", {})
 
         if refund_receive_account:

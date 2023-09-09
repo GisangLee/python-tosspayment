@@ -16,29 +16,60 @@
 from tosspayments import Tosspayments
 ```
 
-## initialize
+## Initialize
 ```python
-toss = Tosspayments("Your Toss Payment Secret Key")
+toss_client = Tosspayments("Your Toss Payment Secret Key")
 ```
 
-## Confirm Payment
+## APIs
+Please visit the official [Toss Payments](https://docs.tosspayments.com/reference) website to find the most up-to-date information.
+### Common Guidelines for POST APIs
+* idempotency_key  
+  * An `idempotency_key` can be used for the POST API.
+    * If you want `idempotence`, add idempotency_key. (`not required`)
+    * max_length = 300
+  * The remaining APIs automatically guarantee idempotence.
+  * [reference](https://docs.tosspayments.com/reference/using-api/idempotency-key)
+___
+### Confirm Payment
 ```python
-toss.confirm(payment_key: str, toss_order_id: str, amount: int, idempotency_key: str = None)
+toss_client.confirm(payment_key: str, toss_order_id: str, amount: int, idempotency_key: str = None)
 ```
-* idempotency_key 
-  * If you want `idempotence`, add idempotency_key. (`not required`)
-  * An `idempotency_key` is required for the POST API. The remaining APIs automatically guarantee idempotence. 
+* request body
+  ```
+  {
+      "amount":"1000",
+      "orderId":"ORDER_ID_THAT_YOU_CREATE",  -> need to create when creating your payment data
+      "paymentKey":"PAYMENT_KEY_FROM_FRONT_END"  -> We receive it from the front-end.
+  }
+  ```
 
-## Cancel Payment
+### Cancel Payment
 ```python
-toss.cancel(payment_key: str, cancel_data: dict, idempotency_key: str = None)
+toss_client.cancel(payment_key: str, cancel_data: dict, idempotency_key: str = None)
 ```
-* idempotency_key 
-  * If you want `idempotence`, add idempotency_key. (`not required`)
-  * An `idempotency_key` is required for the POST API. The remaining APIs automatically guarantee idempotence. 
+* request body
+  ```
+    cancel_data = {
+        "cancel_reason": "단순변심",  -> required
+        "cancel_amount": 1000,
+        "curreny": "KRW",
+        "divided_payment": "True",
+        "refund_receive_account": {   -> When a user pays with a virtual account, it is mandatory
+            "account_number": "1234567",
+            "bank": "13",
+            "holder_name": "test" 
+        },
+        "tax_amount": 100,
+        "tax_exemption_amount": 0,
+        "tax_free_amount": 0,
+    }
+  ```
+  * Because we send our `payment_key` in the headers, we can simply add the required data when posting to the cancel API.
+    * `cancel_reason`, `refund_receive_account (case of virtual_account)`
+    * If you want to include the remaining data, you are allowed to do so.
 
-
-## Search Payment
+### Search Payment
 ```python
-toss.search_payment(payment_key: str)
+toss_client.search_payment(payment_key: str)
 ```
