@@ -69,7 +69,29 @@ toss_client.cancel(payment_key: str, cancel_data: dict, idempotency_key: str = N
     * `cancel_reason`, `refund_receive_account (case of virtual_account)`
     * If you want to include the remaining data, you are allowed to do so.
 
-### Search Payment
+### GET Payment by PaymentKey
 ```python
-toss_client.search_payment(payment_key: str)
+toss_client.get_payment_by_payment_key(payment_key: str)
 ```
+
+### GET Payment by Order id
+```python
+toss_client.get_payment_by_order_id(order_id: str)
+```
+
+
+### GET Transaction
+```python
+toss_client.get_transaction(start_date: str, end_date: str, starting_after: str = None, limit: int = None)
+```
+  * start_date
+    * It's the date and time information you want to start the query with.
+    * The format is yyyy-MM-dd'T'hh:mm:ss in ISO 8601.
+  * end_date
+    * It's the date and time information you want to end the query with.
+    * The format is yyyy-MM-dd'T'hh:mm:ss in ISO 8601.
+  * starting_after
+    * Used to query records after a specific payment transaction.
+  * limit
+    * It's the number of records you will receive in a single response.
+    * The default value is 100, and the maximum value that can be set is 10,000
