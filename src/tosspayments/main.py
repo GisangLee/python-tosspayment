@@ -4,9 +4,8 @@ import base64
 
 class TossPayments(object):
     def __init__(self, secret_key):
-        # self.__secret_key = settings.TOSS_PAYMENT_SECRET
-        self.__base_url = "https://api.tosspayments.com/"
         self.__secret_key = secret_key
+        self.__base_url = "https://api.tosspayments.com/"
         self.__api_version = "v1"
         self.__payment_api_url = f"{self.__api_version}/payments/"
         self.__transactions_api_url = f"{self.__api_version}/transactions/"
