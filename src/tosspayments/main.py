@@ -7,21 +7,20 @@ class TossPayments(object):
         # self.__secret_key = settings.TOSS_PAYMENT_SECRET
         self.__base_url = "https://api.tosspayments.com/"
         self.__secret_key = secret_key
-        self.api_version = "v1"
-        self.__payment_api_url = f"{self.api_version}/payments/"
-        self.__transactions_api_url = f"{self.api_version}/transactions/"
+        self.__api_version = "v1"
+        self.__payment_api_url = f"{self.__api_version}/payments/"
+        self.__transactions_api_url = f"{self.__api_version}/transactions/"
 
-    class HttpError(Exception):
+    class __HttpError(Exception):
         def __init__(self, code: str, error_type: str, reason=None):
             self.code = code
             self.error_type = error_type
             self.reason = reason
 
-    @staticmethod
-    def __get_response(response):
+    def __get_response(self, response):
         result = response.json()
         if response.status_code != requests.codes.ok:
-            raise TossPayments.HttpError(response.status_code, result.get("code"), result.get("message", ""))
+            raise self.__HttpError(response.status_code, result.get("code"), result.get("message", ""))
         return result.get("response")
 
     @staticmethod
@@ -144,6 +143,18 @@ class TossPayments(object):
         response = self.__get(
             "".join([self.__base_url, self.__transactions_api_url]),
             params={key: value for key, value in potential_params if value},  # None이 아닌 값만 딕셔너리에 추가
+        )
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return self.__get_response(response)
+
+    def pay_with_card_number(self, data:dict, idempotency_key:str = None):
+        response = self.__post(
+            "".join([self.__base_url, self.__payment_api_url, "key-in"]),
+            data=data,
+            idempotency_key=idempotency_key,
         )
 
         if response.status_code == 200:
