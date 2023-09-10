@@ -2,14 +2,23 @@
 
 - python version >= 3.8
 
-
-
 # Pip install Link
 - https://pypi.org/project/python-tosspayments/
 
+# Library update will be from last commit of that branch
 
+# branch convention
+* naming
+  * version-<version_number>
+    * ex ) version-0.0.7
 
 # Use
+
+## install 
+```zsh
+pip install python-tosspayments # latest version
+pip install python-tosspayments==0.0.5 # specific version
+```
 
 ## Load Lib
 ```python
