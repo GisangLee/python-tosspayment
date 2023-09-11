@@ -20,7 +20,7 @@ class TossPayments(object):
         result = response.json()
         if response.status_code != requests.codes.ok:
             raise self.__HttpError(response.status_code, result.get("code"), result.get("message", ""))
-        return result.get("response")
+        return result
 
     @staticmethod
     def __get_headers(self):
@@ -78,10 +78,7 @@ class TossPayments(object):
             idempotency_key=idempotency_key,
         )
 
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return self.__get_response(response)
+        return self.__get_response(response)
 
     def cancel(self, payment_key: str, cancel_data: dict, idempotency_key: str = None):
         # virtual_account refund info
@@ -103,10 +100,7 @@ class TossPayments(object):
             idempotency_key=idempotency_key,
         )
 
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return self.__get_response(response)
+        return self.__get_response(response)
 
     def get_payment_by_payment_key(self, payment_key: str):
         response = self.__get(
@@ -114,10 +108,7 @@ class TossPayments(object):
             params={"paymentKey": payment_key},
         )
 
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return self.__get_response(response)
+        return self.__get_response(response)
 
     def get_payment_by_order_id(self, order_id: str):
         response = self.__get(
@@ -125,10 +116,7 @@ class TossPayments(object):
             params={"orderId": order_id},
         )
 
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return self.__get_response(response)
+        return self.__get_response(response)
 
     def get_transaction(self, start_date: str, end_date: str, starting_after: str = None, limit: int = None):
         # 파라미터를 추가할 리스트 생성
@@ -144,10 +132,7 @@ class TossPayments(object):
             params={key: value for key, value in potential_params if value},  # None이 아닌 값만 딕셔너리에 추가
         )
 
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return self.__get_response(response)
+        return self.__get_response(response)
 
     def pay_with_card_number(self, data:dict, idempotency_key:str = None):
         response = self.__post(
@@ -156,7 +141,5 @@ class TossPayments(object):
             idempotency_key=idempotency_key,
         )
 
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return self.__get_response(response)
+        return self.__get_response(response)
+
