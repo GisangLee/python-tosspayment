@@ -11,7 +11,7 @@
 * naming
   * version-<version_number>
     * ex ) version-0.0.7
-
+----------------------------------------------------------------
 # Use
 
 ## install 
@@ -19,17 +19,17 @@
 pip install python-tosspayments # latest version
 pip install python-tosspayments==0.0.5 # specific version
 ```
-
+----------------------------------------------------------------
 ## Load Lib
 ```python
 from tosspayments import Tosspayments
 ```
-
+----------------------------------------------------------------
 ## Initialize
 ```python
 toss_client = Tosspayments("Your Toss Payment Secret Key")
 ```
-
+----------------------------------------------------------------
 ## APIs
 Please visit the official [Toss Payments](https://docs.tosspayments.com/reference) website to find the most up-to-date information.
 ### Common Guidelines for POST APIs
@@ -39,7 +39,7 @@ Please visit the official [Toss Payments](https://docs.tosspayments.com/referenc
     * max_length = 300
   * The remaining APIs automatically guarantee idempotence.
   * [reference](https://docs.tosspayments.com/reference/using-api/idempotency-key)
-___
+----------------------------------------------------------------
 
 ### Pay with Card Number
 ```python
@@ -103,7 +103,7 @@ toss_client.pay_with_card_number(data: dict, idempotency_key: str = None)
     "idempotency_key": "idempotency_key",
   },
   ```
-
+----------------------------------------------------------------
 ### Confirm Payment
 ```python
 toss_client.confirm(payment_key: str, toss_order_id: str, amount: int, idempotency_key: str = None)
@@ -116,7 +116,7 @@ toss_client.confirm(payment_key: str, toss_order_id: str, amount: int, idempoten
       "paymentKey":"PAYMENT_KEY_FROM_FRONT_END",  -> We receive it from the front-end.
   }
   ```
-
+----------------------------------------------------------------
 ### Cancel Payment
 ```python
 toss_client.cancel(payment_key: str, cancel_data: dict, idempotency_key: str = None)
@@ -141,17 +141,18 @@ toss_client.cancel(payment_key: str, cancel_data: dict, idempotency_key: str = N
   * Because we send our `payment_key` in the headers, we can simply add the required data when posting to the cancel API.
     * `cancel_reason`, `refund_receive_account (case of virtual_account)`
     * If you want to include the remaining data, you are allowed to do so.
-
+----------------------------------------------------------------
 ### GET Payment by PaymentKey
 ```python
 toss_client.get_payment_by_payment_key(payment_key: str)
 ```
+----------------------------------------------------------------
 
 ### GET Payment by Order id
 ```python
 toss_client.get_payment_by_order_id(order_id: str)
 ```
-
+----------------------------------------------------------------
 
 ### GET Transaction
 ```python
@@ -173,3 +174,35 @@ toss_client.get_transaction(start_date: str, end_date: str, starting_after: str 
   * limit
     * It's the number of records you will receive in a single response.
     * The default value is 100, and the maximum value that can be set is 10,000
+
+----------------------------------------------------------------
+### Request Access Token for Brand Pay
+```python
+toss_client.request_brand_pay_access_token(customer_key: str, grant_type: str, code: str = None, customer_identity: dict = {}):
+```
+* args
+  ```
+    customer_key: 고객 ID
+    grant_type: 요청 타입. AuthorizationCode, RefreshToken 중 하나
+    code: 약관 동의 API의 응답 또는 리다이렉트 URL의 쿼리 파라미터로 돌아온 code
+    customer_identity: {
+        "ci": 고객의 연계 정보(CI),
+        "mobilePhone": 고객 휴대폰번호,
+        "name": 고객 이름,
+        "rrn": 고객의 주민번호 앞 7자리(생년월일+성별코드),
+    }
+  ```
+----------------------------------------------------------------
+  
+### Confirm Brand Pay
+```python
+toss_client.confirm_brandpay(payment_key: str, amount: int, customer_key: str, order_id: str):
+```
+
+* args
+    ```
+    payment_key: 결제 키값 최대 200자
+    amount: 결제할 금액
+    customer_key: 고객 ID
+    order_id: 주문 ID ( 영문 대소문자, 숫자, 특수문자 -, _로 이루어진 6자 이상 64자 이하의 문자열 )
+    ```

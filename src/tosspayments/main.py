@@ -8,6 +8,7 @@ class TossPayments(object):
         self.__base_url = "https://api.tosspayments.com/"
         self.__api_version = "v1"
         self.__payment_api_url = f"{self.__api_version}/payments/"
+        self.__brandpay_api_url = f"{self.__api_version}/brandpay/"
         self.__transactions_api_url = f"{self.__api_version}/transactions/"
 
     class __HttpError(Exception):
@@ -134,7 +135,7 @@ class TossPayments(object):
 
         return self.__get_response(response)
 
-    def pay_with_card_number(self, data:dict, idempotency_key:str = None):
+    def pay_with_card_number(self, data:dict, idempotency_key: str = None):
         response = self.__post(
             "".join([self.__base_url, self.__payment_api_url, "key-in"]),
             data=data,
@@ -143,3 +144,53 @@ class TossPayments(object):
 
         return self.__get_response(response)
 
+    def request_brand_pay_access_token(self,customer_key: str, grant_type: str, code: str = None, customer_identity: dict = {}):
+        """
+        :param customer_key: 고객 ID
+        :param grant_type: 요청 타입입니다. AuthorizationCode, RefreshToken 중 하나
+        :param code: 약관 동의 API의 응답 또는 리다이렉트 URL의 쿼리 파라미터로 돌아온 code
+        :param customer_identity: {
+            "ci": 고객의 연계 정보(CI),
+            "mobilePhone": 고객 휴대폰번호,
+            "name": 고객 이름,
+            "rrn": 고객의 주민번호 앞 7자리(생년월일+성별코드),
+        }
+        :return: {
+          "accessToken": "",
+          "refreshToken": "",
+          "tokenType": "bearer",
+          "expiresIn": 2592000
+        }
+        """
+        potential_body = [
+            ("customerKey", customer_key),
+            ("grantType", grant_type),
+            ("code", code),
+            ("customerIdentity", customer_identity)
+        ]
+        response = self.__post(
+            "".join([self.__base_url, self.__brandpay_api_url, "authorizations/access-token"]),
+            data={key: value for key, value in potential_body if value}
+        )
+
+        return self.__get_response(response)
+
+    def confirm_brandpay(self, payment_key: str, amount: int, customer_key: str, order_id: str):
+        """
+
+        :param payment_key: 결제 키값 최대 200자
+        :param amount: 결제할 금액
+        :param customer_key: 고객 ID
+        :param order_id: 주문 ID ( 영문 대소문자, 숫자, 특수문자 -, _로 이루어진 6자 이상 64자 이하의 문자열 )
+        :return:
+        """
+        response = self.__post(
+            "".join([self.__base_url, self.__brandpay_api_url, "payments/confirm"]),
+            data={
+                "paymentKey": payment_key,
+                "amount": amount,
+                "customerKey": customer_key,
+                "orderId": order_id,
+            }
+        )
+        return self.__get_response(response)
