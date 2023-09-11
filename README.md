@@ -1,6 +1,7 @@
 # Toss Payment SDK for Python
 
 - python version >= 3.8
+- 토스페이먼츠가 아닌 제 3자가 만든 SDK입니다.
 
 # Pip install Link
 - https://pypi.org/project/python-tosspayments/
