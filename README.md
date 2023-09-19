@@ -43,11 +43,11 @@ Please visit the official [Toss Payments](https://docs.tosspayments.com/referenc
 ----------------------------------------------------------------
 
 ### Pay with Card Number
-```python
+```
 toss_client.pay_with_card_number(data: dict, idempotency_key: str = None)
 ```
 * request body
-  ```Json \
+  ```
   // Korean
   {
     "data": {
@@ -76,7 +76,7 @@ toss_client.pay_with_card_number(data: dict, idempotency_key: str = None)
   }
   ```
   
-  ```Json \
+  ```
   // English
   {
     "data": {
@@ -106,11 +106,11 @@ toss_client.pay_with_card_number(data: dict, idempotency_key: str = None)
   ```
 ----------------------------------------------------------------
 ### Confirm Payment
-```python
+```
 toss_client.confirm(payment_key: str, toss_order_id: str, amount: int, idempotency_key: str = None)
 ```
 * request body
-  ```Json
+  ```
   {
       "amount":1000,
       "orderId":"ORDER_ID_THAT_YOU_CREATE",  -> need to create when creating your payment data
@@ -119,17 +119,17 @@ toss_client.confirm(payment_key: str, toss_order_id: str, amount: int, idempoten
   ```
 ----------------------------------------------------------------
 ### Cancel Payment
-```python
+```
 toss_client.cancel(payment_key: str, cancel_data: dict, idempotency_key: str = None)
 ```
 * request body
-  ```Json
+  ```
     cancel_data = {
         "cancel_reason": "단순변심",  -> required
         "cancel_amount": 1000,
         "curreny": "KRW",
         "divided_payment": "True",
-        "refund_receive_account": {   -> When a user pays with a virtual account, it is mandatory
+        "refund_receive_account": {   -> If user pays with a virtual account, it is required.
             "account_number": "1234567",
             "bank": "13",
             "holder_name": "test" 
@@ -144,19 +144,19 @@ toss_client.cancel(payment_key: str, cancel_data: dict, idempotency_key: str = N
     * If you want to include the remaining data, you are allowed to do so.
 ----------------------------------------------------------------
 ### GET Payment by PaymentKey
-```python
+```
 toss_client.get_payment_by_payment_key(payment_key: str)
 ```
 ----------------------------------------------------------------
 
 ### GET Payment by Order id
-```python
+```
 toss_client.get_payment_by_order_id(order_id: str)
 ```
 ----------------------------------------------------------------
 
 ### GET Transaction
-```python
+```
 toss_client.get_transaction(start_date: str, end_date: str, starting_after: str = None, limit: int = None)
 ```
   * start_date
@@ -166,7 +166,7 @@ toss_client.get_transaction(start_date: str, end_date: str, starting_after: str 
     * It's the date and time information you want to end the query with.
     * The format is yyyy-MM-dd'T'hh:mm:ss in ISO 8601.
     * ex) 
-      ```python
+      ```
           start_date = str((now-datetime.timedelta(days=10)).isoformat())
           end_date = str(now.isoformat())
       ```
@@ -178,7 +178,7 @@ toss_client.get_transaction(start_date: str, end_date: str, starting_after: str 
 
 ----------------------------------------------------------------
 ### Request Access Token for Brand Pay
-```python
+```
 toss_client.request_brand_pay_access_token(customer_key: str, grant_type: str, code: str = None, customer_identity: dict = {}):
 ```
 * args
@@ -196,7 +196,7 @@ toss_client.request_brand_pay_access_token(customer_key: str, grant_type: str, c
 ----------------------------------------------------------------
   
 ### Confirm Brand Pay
-```python
+```
 toss_client.confirm_brandpay(payment_key: str, amount: int, customer_key: str, order_id: str):
 ```
 
