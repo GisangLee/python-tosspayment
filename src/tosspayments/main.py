@@ -10,6 +10,7 @@ class TossPayments(object):
         self.__payment_api_url = f"{self.__api_version}/payments/"
         self.__brandpay_api_url = f"{self.__api_version}/brandpay/"
         self.__transactions_api_url = f"{self.__api_version}/transactions/"
+        self.__create_billing_key_api_url = f"{self.__api_version}/billing/"
 
     class __HttpError(Exception):
         def __init__(self, code: str, error_type: str, reason=None):
@@ -332,4 +333,129 @@ class TossPayments(object):
                 "orderId": order_id,
             },
         )
+        return self.__get_response(response)
+
+    def create_billing_key(self, data: dict):
+        """
+        Create Billing Key
+
+        Params:
+
+        - data (dict) - 빌링키 발급에 필요한 정보:
+            - cardNumber (str) - 카드 번호
+            - cardExpirationYear (str)- 카드 반료 년
+            - cardExpirationMonth (str) - 카드 반료 월
+            - cardPassword (str) - 카드 비밀번호 앞 두자리
+            - customerIdentityNumber (str) - 생년월일
+            - customerKey (str) - 고객 키
+
+        :return
+            {
+              "mId": "tosspayments",
+              "customerKey": "iy1HaBNtNrFYO3N0YNWbZ",
+              "authenticatedAt": "2021-01-01T10:01:30+09:00",
+              "method": "카드",
+              "billingKey": "iy1HaBNtNrFYO3N0YNWbZ",
+              "card": {
+                "issuerCode": "61",
+                "acquirerCode": "31",
+                "number": "43301234****123*",
+                "cardType": "신용",
+                "ownerType": "개인"
+              }
+            }
+        """
+        response = self.__post(
+            "".join(
+                [
+                    self.__base_url,
+                    self.__create_billing_key_api_url,
+                    "authorizations/card",
+                ]
+            ),
+            data=data,
+            idempotency_key=None,
+        )
+
+        return self.__get_response(response)
+
+    def pay_with_billing_key(self, billing_key: str, data: dict):
+        """
+        Create Billing Key
+
+        Params:
+        - billing_key (str) - 빌링 key
+
+        - data (dict) - 빌링키 발급에 필요한 정보:
+            - amount (int) - 금액
+            - orderName (str)- 주문 명
+            - orderId (str) - 주문 번호
+            - customer_key (str) - 고객 키
+
+        :return
+        {
+          "mId": "tvivarepublica2",
+          "lastTransactionKey": "748038ECC457E11C9532BB4A7B7D02E1",
+          "paymentKey": "xMljweGQBN5OWRapdA8dPbZN9zYl7X8o1zEqZKLPbmD70vk4",
+          "orderId": "b05c8d5b-7414-44af-9bcd-053e5eeec1e1",
+          "orderName": "음악 스트리밍 구독",
+          "taxExemptionAmount": 0,
+          "status": "DONE",
+          "requestedAt": "2023-08-08T16:30:01+09:00",
+          "approvedAt": "2023-08-08T16:30:01+09:00",
+          "useEscrow": false,
+          "cultureExpense": false,
+          "card": {
+            "company": "토스뱅크",
+            "issuerCode": "24",
+            "acquirerCode": "21",
+            "number": "53275010****222*",
+            "installmentPlanMonths": 0,
+            "isInterestFree": false,
+            "interestPayer": null,
+            "approveNo": "00000000",
+            "useCardPoint": false,
+            "cardType": "신용",
+            "ownerType": "개인",
+            "acquireStatus": "READY",
+            "receiptUrl": "https://dashboard.tosspayments.com/receipt/redirection?transactionId=tviva20230808163001X5IR1&ref=PX",
+            "amount": 4900
+          },
+          "virtualAccount": null,
+          "transfer": null,
+          "mobilePhone": null,
+          "giftCertificate": null,
+          "cashReceipt": null,
+          "cashReceipts": null,
+          "discount": null,
+          "cancels": null,
+          "secret": null,
+          "type": "BILLING",
+          "easyPay": null,
+          "country": "KR",
+          "failure": null,
+          "isPartialCancelable": true,
+          "receipt": {
+            "url": "https://dashboard.tosspayments.com/receipt/redirection?transactionId=tviva20230808163001X5IR1&ref=PX"
+          },
+          "checkout": {
+            "url": "https://api.tosspayments.com/v1/payments/xMljweGQBN5OWRapdA8dPbZN9zYl7X8o1zEqZKLPbmD70vk4/checkout"
+          },
+          "transactionKey": "748038ECC457E11C9532BB4A7B7D02E1",
+          "currency": "KRW",
+          "totalAmount": 50000,
+          "balanceAmount": 50000,
+          "suppliedAmount": 45455,
+          "vat": 4545,
+          "taxFreeAmount": 0,
+          "method": "카드",
+          "version": "2022-07-27"
+        }
+        """
+        response = self.__post(
+            "".join([self.__base_url, self.__create_billing_key_api_url, billing_key]),
+            data=data,
+            idempotency_key=None,
+        )
+
         return self.__get_response(response)

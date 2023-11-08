@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="python-tosspayments",
-    version="1.0.1",
+    version="1.1.0",
     description="Toss Payments SDK for python. 토스페이먼츠가 아닌 제 3자가 만든 SDK입니다.",
     author="jsonlee",
     author_email="dudegs.py@gmail.com",
